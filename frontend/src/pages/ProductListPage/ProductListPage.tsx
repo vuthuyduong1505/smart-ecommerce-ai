@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { SlidersHorizontal, Laptop, X } from 'lucide-react';
+import { SlidersHorizontal, X } from 'lucide-react';
 import { ProductCard } from '../../components/product/ProductCard';
 import { ProductFilter, PRICE_RANGES } from '../../components/product/ProductFilter';
 import { ProductSort } from '../../components/product/ProductSort';
@@ -155,110 +155,6 @@ export const ProductListPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-2xs">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 text-rose-600 font-semibold text-xs tracking-wider uppercase mb-1">
-              <Laptop className="w-4 h-4" />
-              <span>Catalog Laptop Thông Minh</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-              {keyword ? `Kết quả tìm kiếm cho: "${keyword}"` : 'Tất Cả Sản Phẩm Laptop'}
-            </h1>
-          </div>
-
-          <div className="flex items-center gap-3">
-            {/* Mobile Filter Toggle Button */}
-            <button
-              onClick={() => setMobileFilterOpen(true)}
-              className="lg:hidden inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-colors"
-            >
-              <SlidersHorizontal className="w-4 h-4" />
-              <span>Bộ lọc</span>
-              {hasActiveFilters && (
-                <span className="w-2 h-2 rounded-full bg-rose-600"></span>
-              )}
-            </button>
-
-            {/* Sort component */}
-            <ProductSort
-              sortBy={sortBy}
-              sortDirection={sortDirection}
-              onSortChange={handleSortChange}
-            />
-          </div>
-        </div>
-
-        {/* Active Filter Chips */}
-        {hasActiveFilters && (
-          <div className="mt-4 pt-4 border-t border-slate-100 flex flex-wrap items-center gap-2">
-            <span className="text-xs font-semibold text-slate-500">Đang lọc theo:</span>
-
-            {keyword && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-800 text-xs font-medium">
-                Từ khóa: <strong>{keyword}</strong>
-                <button onClick={() => updateParams({ keyword: null })} className="hover:text-rose-600">
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </span>
-            )}
-
-            {categorySlug && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-800 text-xs font-medium">
-                Danh mục: <strong>{categorySlug}</strong>
-                <button onClick={() => updateParams({ categorySlug: null })} className="hover:text-rose-600">
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </span>
-            )}
-
-            {brandName && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-800 text-xs font-medium">
-                Hãng: <strong>{brandName}</strong>
-                <button onClick={() => updateParams({ brandName: null })} className="hover:text-rose-600">
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </span>
-            )}
-
-            {priceRangeKey !== 'ALL' && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-800 text-xs font-medium">
-                Giá: <strong>{activePriceRange.label}</strong>
-                <button onClick={() => updateParams({ priceRange: null })} className="hover:text-rose-600">
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </span>
-            )}
-
-            {useCase && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-800 text-xs font-medium">
-                Nhu cầu: <strong>{useCase}</strong>
-                <button onClick={() => updateParams({ useCase: null })} className="hover:text-rose-600">
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </span>
-            )}
-
-            {onlyInStock && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-medium border border-emerald-200">
-                Chỉ còn hàng
-                <button onClick={() => updateParams({ inStock: null })} className="hover:text-rose-600">
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </span>
-            )}
-
-            <button
-              onClick={handleResetFilters}
-              className="text-xs text-rose-600 hover:text-rose-700 font-semibold underline ml-1 cursor-pointer"
-            >
-              Xóa tất cả lọc
-            </button>
-          </div>
-        )}
-      </div>
-
       {/* Main Grid: Sidebar Filter + Product Listing */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
         {/* Desktop Filter Sidebar */}
@@ -282,7 +178,106 @@ export const ProductListPage: React.FC = () => {
         </div>
 
         {/* Product Cards Grid & States */}
-        <div className="lg:col-span-3">
+        <div className="lg:col-span-3 space-y-4">
+          {/* Top Sort & Mobile Filter Toolbar */}
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              {/* Mobile Filter Toggle Button */}
+              <button
+                onClick={() => setMobileFilterOpen(true)}
+                className="lg:hidden inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-slate-800 text-xs font-bold shadow-2xs hover:bg-slate-50 transition-colors"
+              >
+                <SlidersHorizontal className="w-4 h-4 text-slate-500" />
+                <span>Bộ lọc</span>
+                {hasActiveFilters && (
+                  <span className="w-2 h-2 rounded-full bg-rose-600"></span>
+                )}
+              </button>
+
+              {keyword && (
+                <span className="text-sm font-semibold text-slate-700">
+                  Kết quả cho: <span className="text-rose-600 font-bold">"{keyword}"</span>
+                </span>
+              )}
+            </div>
+
+            {/* Sort component */}
+            <div className="ml-auto">
+              <ProductSort
+                sortBy={sortBy}
+                sortDirection={sortDirection}
+                onSortChange={handleSortChange}
+              />
+            </div>
+          </div>
+
+          {/* Active Filter Chips */}
+          {hasActiveFilters && (
+            <div className="flex flex-wrap items-center gap-2 p-3 bg-white rounded-xl border border-slate-200/80 shadow-2xs">
+              <span className="text-xs font-semibold text-slate-500">Đang lọc theo:</span>
+
+              {keyword && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-800 text-xs font-medium">
+                  Từ khóa: <strong>{keyword}</strong>
+                  <button onClick={() => updateParams({ keyword: null })} className="hover:text-rose-600">
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </span>
+              )}
+
+              {categorySlug && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-800 text-xs font-medium">
+                  Danh mục: <strong>{categorySlug}</strong>
+                  <button onClick={() => updateParams({ categorySlug: null })} className="hover:text-rose-600">
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </span>
+              )}
+
+              {brandName && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-800 text-xs font-medium">
+                  Hãng: <strong>{brandName}</strong>
+                  <button onClick={() => updateParams({ brandName: null })} className="hover:text-rose-600">
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </span>
+              )}
+
+              {priceRangeKey !== 'ALL' && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-800 text-xs font-medium">
+                  Giá: <strong>{activePriceRange.label}</strong>
+                  <button onClick={() => updateParams({ priceRange: null })} className="hover:text-rose-600">
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </span>
+              )}
+
+              {useCase && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-800 text-xs font-medium">
+                  Nhu cầu: <strong>{useCase}</strong>
+                  <button onClick={() => updateParams({ useCase: null })} className="hover:text-rose-600">
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </span>
+              )}
+
+              {onlyInStock && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-medium border border-emerald-200">
+                  Chỉ còn hàng
+                  <button onClick={() => updateParams({ inStock: null })} className="hover:text-rose-600">
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </span>
+              )}
+
+              <button
+                onClick={handleResetFilters}
+                className="text-xs text-rose-600 hover:text-rose-700 font-semibold underline ml-1 cursor-pointer"
+              >
+                Xóa tất cả lọc
+              </button>
+            </div>
+          )}
           {loading && <LoadingSpinner text="Đang tải danh sách laptop từ MongoDB..." />}
 
           {error && (
