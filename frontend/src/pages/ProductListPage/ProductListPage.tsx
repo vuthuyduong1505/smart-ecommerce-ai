@@ -166,9 +166,6 @@ export const ProductListPage: React.FC = () => {
             <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
               {keyword ? `Kết quả tìm kiếm cho: "${keyword}"` : 'Tất Cả Sản Phẩm Laptop'}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              Tổng cộng <span className="font-bold text-slate-900">{totalElements}</span> sản phẩm phù hợp
-            </p>
           </div>
 
           <div className="flex items-center gap-3">
