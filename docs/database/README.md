@@ -15,3 +15,4 @@
 6. `recommendation_logs`: Log hành vi xem, bấm, mua để huấn luyện và phục vụ mô hình gợi ý.
 
 > **Lưu ý:** Giai đoạn khởi tạo nền tảng này chưa cấu hình kết nối MongoDB vào backend; tài liệu này định hướng cho giai đoạn tích hợp tiếp theo.
+

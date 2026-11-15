@@ -93,3 +93,4 @@ AI Service sẽ khả dụng tại: `http://localhost:8000`
 ## 5. Quy ước & Lưu ý phát triển
 - Tuyệt đối không commit các file môi trường `.env`, `node_modules`, `target`, thư mục ảo `.venv` lên Git.
 - Mọi tài liệu kỹ thuật được cập nhật đồng bộ trong thư mục `docs/`.
+

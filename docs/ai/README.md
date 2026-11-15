@@ -17,3 +17,4 @@ Giai đoạn đầu, AI Service tập trung hỗ trợ danh mục **Laptop**, sa
 - **Framework:** FastAPI + Python 3.11.
 - **Server:** Uvicorn ASGI Server.
 - **Mô hình tích hợp tương lai:** LLM, Embedding model, Vector Store (FAISS/ChromaDB/MongoDB Atlas Vector Search).
+

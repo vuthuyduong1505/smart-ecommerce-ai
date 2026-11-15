@@ -32,3 +32,4 @@ Hệ thống Smart E-commerce AI được thiết kế theo mô hình kiến tr�
 2. **Backend:** Quản lý sản phẩm, danh mục, đơn hàng, người dùng, xác thực, và điều phối yêu cầu AI.
 3. **AI Service:** Cung cấp các khả năng thông minh: Smart Search, gợi ý cá nhân hóa (Recommendation) và AI Product Advisor (RAG) tập trung vào danh mục Laptop.
 4. **Database:** Lưu trữ dữ liệu danh mục, sản phẩm, thông số kỹ thuật chi tiết của Laptop, thông tin đơn hàng và lịch sử tương tác.
+

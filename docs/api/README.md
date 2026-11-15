@@ -37,3 +37,4 @@
 - **Tìm kiếm thông minh (Smart Search):** `POST /api/v1/search/smart`
 - **Gợi ý sản phẩm (Recommendation):** `GET /api/v1/recommendations/user/{id}`
 - **AI Product Advisor (RAG):** `POST /api/v1/ai/advisor/chat`
+
