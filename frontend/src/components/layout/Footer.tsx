@@ -1,57 +1,10 @@
 import React from 'react';
-import { Laptop, Database, Cpu, Filter, Sparkles, Heart } from 'lucide-react';
+import { Laptop, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const Footer: React.FC = () => {
   return (
     <footer className="bg-slate-900 text-slate-300 mt-20 border-t border-slate-800">
-      {/* Platform feature highlights banner */}
-      <div className="border-b border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center text-rose-500 shrink-0">
-                <Database className="w-6 h-6" />
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold text-white">Dữ liệu Catalog Chuẩn</h4>
-                <p className="text-xs text-slate-400 mt-0.5">Đồng bộ trực tiếp từ MongoDB</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center text-rose-500 shrink-0">
-                <Cpu className="w-6 h-6" />
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold text-white">Thông số minh bạch</h4>
-                <p className="text-xs text-slate-400 mt-0.5">Chi tiết CPU, RAM, GPU, Màn hình</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center text-rose-500 shrink-0">
-                <Filter className="w-6 h-6" />
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold text-white">Bộ lọc đa tiêu chí</h4>
-                <p className="text-xs text-slate-400 mt-0.5">Lọc theo hãng, khoảng giá & nhu cầu</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center text-rose-500 shrink-0">
-                <Sparkles className="w-6 h-6" />
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold text-white">Định hướng AI R&D</h4>
-                <p className="text-xs text-slate-400 mt-0.5">Nghiên cứu trợ lý mua sắm thông minh</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Main footer navigation */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
