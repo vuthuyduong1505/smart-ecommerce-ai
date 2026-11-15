@@ -11,8 +11,11 @@ import {
   LogOut,
   Shield,
   Settings,
+  Package,
+  MessageSquare,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useCart } from '../../contexts/CartContext';
 
 export const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -23,6 +26,7 @@ export const Header: React.FC = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const { currentUser, isAuthenticated, isAdmin, logout } = useAuth();
+  const { cartCount } = useCart();
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -54,6 +58,15 @@ export const Header: React.FC = () => {
     setMobileMenuOpen(false);
     await logout();
     navigate('/');
+  };
+
+  const handleCartClick = () => {
+    if (!isAuthenticated) {
+      alert('Vui lòng đăng nhập để sử dụng tính năng Giỏ hàng theo đúng thiết kế hệ thống!');
+      navigate('/login');
+    } else {
+      navigate('/cart');
+    }
   };
 
   const getDisplayName = () => {
@@ -173,15 +186,52 @@ export const Header: React.FC = () => {
                         <span>Thông tin tài khoản</span>
                       </Link>
 
+                      <Link
+                        to="/account/orders"
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-rose-600 transition-colors"
+                      >
+                        <Package className="w-4 h-4 text-slate-400" />
+                        <span>Đơn hàng của tôi</span>
+                      </Link>
+
+                      <Link
+                        to="/account/reviews"
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-rose-600 transition-colors"
+                      >
+                        <MessageSquare className="w-4 h-4 text-slate-400" />
+                        <span>Đánh giá của tôi</span>
+                      </Link>
+
                       {isAdmin && (
-                        <Link
-                          to="/admin/users"
-                          onClick={() => setUserDropdownOpen(false)}
-                          className="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-rose-600 transition-colors"
-                        >
-                          <Shield className="w-4 h-4 text-rose-500" />
-                          <span>Quản lý người dùng</span>
-                        </Link>
+                        <>
+                          <div className="my-1 border-t border-slate-100" />
+                          <Link
+                            to="/admin/users"
+                            onClick={() => setUserDropdownOpen(false)}
+                            className="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-rose-600 transition-colors"
+                          >
+                            <Shield className="w-4 h-4 text-rose-500" />
+                            <span>Quản lý người dùng</span>
+                          </Link>
+                          <Link
+                            to="/admin/orders"
+                            onClick={() => setUserDropdownOpen(false)}
+                            className="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-rose-600 transition-colors"
+                          >
+                            <Package className="w-4 h-4 text-rose-500" />
+                            <span>Quản lý đơn hàng</span>
+                          </Link>
+                          <Link
+                            to="/admin/reviews"
+                            onClick={() => setUserDropdownOpen(false)}
+                            className="flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-rose-600 transition-colors"
+                          >
+                            <MessageSquare className="w-4 h-4 text-rose-500" />
+                            <span>Quản lý đánh giá</span>
+                          </Link>
+                        </>
                       )}
                     </div>
 
@@ -215,23 +265,18 @@ export const Header: React.FC = () => {
               </div>
             )}
 
-            {/* Cart Icon (Placeholder - Giỏ hàng chỉ dành cho người dùng đăng nhập) */}
+            {/* Cart Icon with Live Badge */}
             <button
-              onClick={() => {
-                if (!isAuthenticated) {
-                  alert('Vui lòng đăng nhập để sử dụng tính năng Giỏ hàng theo đúng thiết kế hệ thống!');
-                  navigate('/login');
-                } else {
-                  alert('Tính năng Giỏ hàng sẽ được triển khai ở Module Cart & Checkout kế tiếp!');
-                }
-              }}
+              onClick={handleCartClick}
               className="relative p-2.5 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-700 transition-colors group"
               title="Giỏ hàng"
             >
               <ShoppingCart className="w-5 h-5" />
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-rose-600 text-white text-[11px] font-bold rounded-full flex items-center justify-center border-2 border-white">
-                0
-              </span>
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-rose-600 text-white text-[11px] font-bold rounded-full flex items-center justify-center border-2 border-white shadow-2xs animate-in zoom-in-75">
+                  {cartCount > 99 ? '99+' : cartCount}
+                </span>
+              )}
             </button>
 
             {/* Mobile menu toggle */}
@@ -288,13 +333,27 @@ export const Header: React.FC = () => {
                 >
                   Tài khoản
                 </Link>
+                <Link
+                  to="/account/orders"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-center px-3 py-2 rounded-xl bg-slate-100 text-xs font-semibold text-slate-700"
+                >
+                  Đơn mua
+                </Link>
+                <Link
+                  to="/cart"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-center px-3 py-2 rounded-xl bg-rose-50 text-xs font-semibold text-rose-700"
+                >
+                  Giỏ hàng ({cartCount})
+                </Link>
                 {isAdmin && (
                   <Link
-                    to="/admin/users"
+                    to="/admin/orders"
                     onClick={() => setMobileMenuOpen(false)}
                     className="text-center px-3 py-2 rounded-xl bg-rose-50 text-xs font-semibold text-rose-700"
                   >
-                    Quản lý Users
+                    Quản lý Đơn
                   </Link>
                 )}
                 <button

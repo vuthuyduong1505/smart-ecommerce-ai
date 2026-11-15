@@ -96,6 +96,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/health").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/brands/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/products/*/my-review-eligibility").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/products/*/reviews").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/v1/products/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
@@ -107,6 +109,9 @@ public class SecurityConfig {
 
                         // 3. Người dùng xác thực (Authenticated endpoints)
                         .requestMatchers("/api/v1/users/me/**").authenticated()
+                        .requestMatchers("/api/v1/cart/**").authenticated()
+                        .requestMatchers("/api/v1/orders/**").authenticated()
+                        .requestMatchers("/api/v1/reviews/**").authenticated()
 
                         // 4. Mặc định các request khác phải xác thực
                         .anyRequest().authenticated()

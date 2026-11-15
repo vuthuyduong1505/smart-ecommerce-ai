@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Cpu, HardDrive, Eye, CheckCircle2, XCircle } from 'lucide-react';
+import { Cpu, HardDrive, Eye, CheckCircle2, XCircle, Star } from 'lucide-react';
 import type { Product } from '../../types/product';
 import { formatCurrency, calculateDiscountPercent } from '../../utils/formatters';
 import { ProductThumbnail } from '../common/ProductThumbnail';
@@ -63,6 +63,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <span className="text-[11px] text-slate-400 capitalize">
               {product.categorySlug.replace('-', ' ')}
             </span>
+            {product.ratingSummary && product.ratingSummary.totalReviews > 0 && (
+              <>
+                <span className="text-slate-300">•</span>
+                <span className="inline-flex items-center gap-0.5 text-[11px] font-bold text-amber-600">
+                  <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                  {product.ratingSummary.averageRating.toFixed(1)}
+                  <span className="text-slate-400 font-normal">({product.ratingSummary.totalReviews})</span>
+                </span>
+              </>
+            )}
           </div>
 
           {/* Product Name */}

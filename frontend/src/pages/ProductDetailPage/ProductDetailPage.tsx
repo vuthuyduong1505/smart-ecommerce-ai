@@ -12,6 +12,8 @@ import {
   CheckCircle2,
   Layers,
   Package,
+  Minus,
+  Plus,
 } from 'lucide-react';
 import { productService } from '../../services/productService';
 import type { Product } from '../../types/product';
@@ -20,10 +22,16 @@ import { ProductThumbnail } from '../../components/common/ProductThumbnail';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { ErrorState } from '../../components/common/ErrorState';
 import { formatCurrency, calculateDiscountPercent } from '../../utils/formatters';
+import { useAuth } from '../../contexts/AuthContext';
+import { useCart } from '../../contexts/CartContext';
+import { ProductReviewSection } from '../../components/review/ProductReviewSection';
 
 export const ProductDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
+
+  const { isAuthenticated } = useAuth();
+  const { addToCart } = useCart();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [selectedImage, setSelectedImage] = useState<string>('');
@@ -31,6 +39,8 @@ export const ProductDetailPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [notFound, setNotFound] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [buyQuantity, setBuyQuantity] = useState<number>(1);
+  const [actionLoading, setActionLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (!slug) {
@@ -44,7 +54,16 @@ export const ProductDetailPage: React.FC = () => {
         setLoading(true);
         setError(null);
         setNotFound(false);
-        const data = await productService.getProductBySlug(slug);
+        let data: Product;
+        try {
+          data = await productService.getProductBySlug(slug);
+        } catch (err: any) {
+          if (err.response?.status === 404) {
+            data = await productService.getProductById(slug);
+          } else {
+            throw err;
+          }
+        }
         setProduct(data);
         const defaultImg =
           data.thumbnailUrl ||
@@ -65,8 +84,47 @@ export const ProductDetailPage: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [slug]);
 
+  const handleAddToCart = async () => {
+    if (!product) return;
+    if (!isAuthenticated) {
+      alert('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.');
+      navigate('/login', { state: { from: `/products/${product.slug}` } });
+      return;
+    }
+    setActionLoading(true);
+    try {
+      await addToCart(product.id, buyQuantity);
+      setToastMessage(`Đã thêm ${buyQuantity} laptop vào giỏ hàng thành công!`);
+      setTimeout(() => setToastMessage(null), 3500);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Không thể thêm vào giỏ hàng.';
+      alert(msg);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleBuyNow = async () => {
+    if (!product) return;
+    if (!isAuthenticated) {
+      alert('Vui lòng đăng nhập để tiến hành mua hàng.');
+      navigate('/login', { state: { from: `/products/${product.slug}` } });
+      return;
+    }
+    setActionLoading(true);
+    try {
+      await addToCart(product.id, buyQuantity);
+      navigate('/checkout');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Không thể thực hiện mua ngay.';
+      alert(msg);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const showPlaceholderActionToast = (actionName: string) => {
-    setToastMessage(`Chức năng "${actionName}" đang ở trạng thái giao diện thử nghiệm (chưa có nghiệp vụ giỏ hàng/thanh toán).`);
+    setToastMessage(`Chức năng "${actionName}" đang ở trạng thái giao diện thử nghiệm.`);
     setTimeout(() => {
       setToastMessage(null);
     }, 3500);
@@ -362,41 +420,71 @@ export const ProductDetailPage: React.FC = () => {
                 </div>
               )}
 
-              {/* Action Buttons (Placeholders) */}
-              <div className="mt-auto pt-4 flex flex-col sm:flex-row gap-3">
-                <button
-                  type="button"
-                  onClick={() => showPlaceholderActionToast('Thêm vào giỏ hàng')}
-                  disabled={!product.inStock}
-                  className="flex-1 py-3.5 px-6 rounded-xl font-bold border-2 border-rose-600 text-rose-600 hover:bg-rose-50 transition-all flex items-center justify-center gap-2 disabled:border-slate-300 disabled:text-slate-400 disabled:bg-slate-100 disabled:cursor-not-allowed"
-                >
-                  <ShoppingCart className="w-5 h-5" />
-                  Thêm vào giỏ hàng
-                </button>
-                <button
-                  type="button"
-                  onClick={() => showPlaceholderActionToast('Mua ngay')}
-                  disabled={!product.inStock}
-                  className="flex-1 py-3.5 px-6 rounded-xl font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-600/25 transition-all flex items-center justify-center gap-2 disabled:bg-slate-300 disabled:shadow-none disabled:cursor-not-allowed"
-                >
-                  <Zap className="w-5 h-5" />
-                  Mua ngay
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (navigator.share) {
-                      navigator.share({ title: product.name, url: window.location.href });
-                    } else {
-                      navigator.clipboard.writeText(window.location.href);
-                      showPlaceholderActionToast('Đã sao chép liên kết vào bộ nhớ tạm');
-                    }
-                  }}
-                  title="Chia sẻ sản phẩm"
-                  className="p-3.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition-all flex items-center justify-center"
-                >
-                  <Share2 className="w-5 h-5" />
-                </button>
+              {/* Quantity Selector & Action Buttons */}
+              <div className="mt-auto pt-4 space-y-3">
+                {product.inStock && (
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-semibold text-slate-700">Số lượng:</span>
+                    <div className="flex items-center border border-slate-200 rounded-xl bg-slate-50 overflow-hidden">
+                      <button
+                        type="button"
+                        onClick={() => setBuyQuantity((q) => Math.max(1, q - 1))}
+                        disabled={buyQuantity <= 1 || actionLoading}
+                        className="w-8 h-8 flex items-center justify-center text-slate-600 hover:bg-slate-200 disabled:opacity-40 transition-colors"
+                      >
+                        <Minus className="w-3.5 h-3.5" />
+                      </button>
+                      <span className="w-10 text-center text-xs font-bold text-slate-800">{buyQuantity}</span>
+                      <button
+                        type="button"
+                        onClick={() => setBuyQuantity((q) => Math.min(10, q + 1))}
+                        disabled={buyQuantity >= 10 || actionLoading}
+                        className="w-8 h-8 flex items-center justify-center text-slate-600 hover:bg-slate-200 disabled:opacity-40 transition-colors"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                    <span className="text-xs text-slate-400">
+                      (Tối đa 10 sản phẩm/lần)
+                    </span>
+                  </div>
+                )}
+
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <button
+                    type="button"
+                    onClick={handleAddToCart}
+                    disabled={!product.inStock || actionLoading}
+                    className="flex-1 py-3.5 px-6 rounded-xl font-bold border-2 border-rose-600 text-rose-600 hover:bg-rose-50 transition-all flex items-center justify-center gap-2 disabled:border-slate-300 disabled:text-slate-400 disabled:bg-slate-100 disabled:cursor-not-allowed"
+                  >
+                    <ShoppingCart className="w-5 h-5" />
+                    <span>{actionLoading ? 'Đang thêm...' : 'Thêm vào giỏ hàng'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleBuyNow}
+                    disabled={!product.inStock || actionLoading}
+                    className="flex-1 py-3.5 px-6 rounded-xl font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-lg shadow-rose-600/25 transition-all flex items-center justify-center gap-2 disabled:bg-slate-300 disabled:shadow-none disabled:cursor-not-allowed"
+                  >
+                    <Zap className="w-5 h-5" />
+                    <span>Mua ngay</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (navigator.share) {
+                        navigator.share({ title: product.name, url: window.location.href });
+                      } else {
+                        navigator.clipboard.writeText(window.location.href);
+                        showPlaceholderActionToast('Đã sao chép liên kết vào bộ nhớ tạm');
+                      }
+                    }}
+                    title="Chia sẻ sản phẩm"
+                    className="p-3.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition-all flex items-center justify-center"
+                  >
+                    <Share2 className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -444,6 +532,9 @@ export const ProductDetailPage: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* Product Reviews & Rating Summary */}
+        <ProductReviewSection productId={product.id} productName={product.name} />
       </div>
     </div>
   );
