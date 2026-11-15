@@ -8,12 +8,32 @@ export const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000,
+  timeout: 15000,
 });
 
+// Request Interceptor: Tự động đính kèm JWT Bearer Token nếu người dùng đã đăng nhập
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('smartlap_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Response Interceptor: Bắt lỗi 401 (hết hạn / token không hợp lệ) và chuẩn hóa thông điệp lỗi
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
+    if (error.response?.status === 401) {
+      // Xóa token khi phiên đăng nhập hết hạn hoặc bị thu hồi
+      localStorage.removeItem('smartlap_token');
+      localStorage.removeItem('smartlap_user');
+      window.dispatchEvent(new Event('auth:unauthorized'));
+    }
+
     const message =
       error.response?.data?.message ||
       error.response?.data?.error ||
@@ -22,4 +42,3 @@ apiClient.interceptors.response.use(
     return Promise.reject(new Error(message));
   }
 );
-

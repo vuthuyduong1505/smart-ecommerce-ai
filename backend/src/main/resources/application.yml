@@ -21,3 +21,13 @@ management:
 app:
   seed:
     enabled: ${APP_SEED_ENABLED:true}
+  bootstrap-admin:
+    enabled: ${APP_BOOTSTRAP_ADMIN_ENABLED:false}
+    email: ${ADMIN_INITIAL_EMAIL:}
+    password: ${ADMIN_INITIAL_PASSWORD:}
+    full-name: ${ADMIN_INITIAL_FULL_NAME:Quản Trị Viên Hệ Thống}
+
+jwt:
+  secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+  expiration-ms: ${JWT_EXPIRATION_MS:86400000} # 24 hours
+
