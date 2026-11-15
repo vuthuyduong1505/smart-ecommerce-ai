@@ -114,24 +114,28 @@ export const Header: React.FC = () => {
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
                 placeholder="Tìm laptop theo tên, cấu hình (i7, RTX 4060, M3, 16GB)..."
-                className="w-full pl-11 pr-24 py-2.5 bg-slate-100 hover:bg-slate-50 focus:bg-white text-slate-900 rounded-xl text-sm border border-transparent focus:border-rose-500 focus:ring-2 focus:ring-rose-100 transition-all outline-hidden"
+                className="w-full pl-11 pr-32 py-2.5 bg-slate-100 hover:bg-slate-50 focus:bg-white text-slate-900 rounded-xl text-sm border border-transparent focus:border-rose-500 focus:ring-2 focus:ring-rose-100 transition-all outline-hidden"
               />
               <Search className="w-5 h-5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-              {keyword && (
+              <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
+                {keyword && (
+                  <button
+                    type="button"
+                    onClick={handleClearSearch}
+                    className="p-1 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-200/70 transition-colors"
+                    title="Xóa tìm kiếm"
+                    aria-label="Xóa từ khóa tìm kiếm"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
                 <button
-                  type="button"
-                  onClick={handleClearSearch}
-                  className="absolute right-20 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 px-1.5 py-0.5"
+                  type="submit"
+                  className="px-4 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-semibold transition-colors shrink-0 shadow-xs"
                 >
-                  Xóa
+                  Tìm kiếm
                 </button>
-              )}
-              <button
-                type="submit"
-                className="absolute right-1.5 top-1/2 -translate-y-1/2 px-4 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-semibold transition-colors"
-              >
-                Tìm kiếm
-              </button>
+              </div>
             </div>
           </form>
 
@@ -298,15 +302,28 @@ export const Header: React.FC = () => {
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               placeholder="Tìm kiếm laptop..."
-              className="w-full pl-10 pr-20 py-2 bg-slate-100 focus:bg-white text-slate-900 rounded-xl text-sm border border-transparent focus:border-rose-500 outline-hidden"
+              className="w-full pl-10 pr-24 py-2 bg-slate-100 focus:bg-white text-slate-900 rounded-xl text-sm border border-transparent focus:border-rose-500 outline-hidden"
             />
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-            <button
-              type="submit"
-              className="absolute right-1 top-1/2 -translate-y-1/2 px-3 py-1 bg-rose-600 text-white rounded-lg text-xs font-semibold"
-            >
-              Tìm
-            </button>
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-1">
+              {keyword && (
+                <button
+                  type="button"
+                  onClick={handleClearSearch}
+                  className="p-1 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-200/70 transition-colors"
+                  title="Xóa tìm kiếm"
+                  aria-label="Xóa từ khóa tìm kiếm"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+              <button
+                type="submit"
+                className="px-3 py-1 bg-rose-600 text-white rounded-lg text-xs font-semibold shrink-0"
+              >
+                Tìm
+              </button>
+            </div>
           </form>
         </div>
       </div>
