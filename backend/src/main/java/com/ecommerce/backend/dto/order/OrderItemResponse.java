@@ -7,6 +7,7 @@ public class OrderItemResponse {
     private String productId;
     private String sku;
     private String productName;
+    private String productSlug;
     private String thumbnailUrl;
     private BigDecimal unitPrice;
     private Integer quantity;
@@ -38,6 +39,14 @@ public class OrderItemResponse {
 
     public void setProductName(String productName) {
         this.productName = productName;
+    }
+
+    public String getProductSlug() {
+        return productSlug;
+    }
+
+    public void setProductSlug(String productSlug) {
+        this.productSlug = productSlug;
     }
 
     public String getThumbnailUrl() {

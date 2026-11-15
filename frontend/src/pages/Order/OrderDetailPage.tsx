@@ -229,22 +229,22 @@ export const OrderDetailPage: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-sm">
               <thead>
-                <tr className="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase">
-                  <th className="py-3 px-2">Sản phẩm</th>
-                  <th className="py-3 px-2 text-center">Số lượng</th>
-                  <th className="py-3 px-2 text-right">Đơn giá</th>
-                  <th className="py-3 px-2 text-right">Thành tiền</th>
+                <tr className="border-b border-slate-200/80 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  <th className="py-3.5 px-4 text-left">Sản phẩm</th>
+                  <th className="py-3.5 px-4 text-center w-24">Số lượng</th>
+                  <th className="py-3.5 px-4 text-right w-36">Đơn giá</th>
+                  <th className="py-3.5 px-4 text-right w-40">Thành tiền</th>
                   {order.orderStatus === 'DELIVERED' && (
-                    <th className="py-3 px-2 text-right">Đánh giá</th>
+                    <th className="py-3.5 px-4 text-center w-36">Đánh giá</th>
                   )}
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {order.items.map((item, idx) => (
-                  <tr key={idx}>
-                    <td className="py-3 px-2">
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-lg bg-slate-100 p-1 shrink-0 flex items-center justify-center relative overflow-hidden">
+                  <tr key={idx} className="hover:bg-slate-50/50 transition-colors">
+                    <td className="py-4 px-4 align-middle">
+                      <div className="flex items-center gap-3.5">
+                        <div className="w-14 h-14 rounded-xl bg-slate-50 border border-slate-100 p-1 shrink-0 flex items-center justify-center relative overflow-hidden">
                           {item.thumbnailUrl && (
                             <img
                               src={item.thumbnailUrl}
@@ -255,33 +255,33 @@ export const OrderDetailPage: React.FC = () => {
                               }}
                             />
                           )}
-                          <Laptop className="w-5 h-5 text-slate-400" />
+                          <Laptop className="w-6 h-6 text-slate-300" />
                         </div>
                         <div className="min-w-0">
                           <Link
-                            to={`/products/${item.productId}`}
-                            className="font-semibold text-slate-900 text-xs sm:text-sm hover:text-rose-600 transition-colors line-clamp-2"
+                            to={`/products/${item.productSlug || item.productId}`}
+                            className="font-bold text-slate-900 text-xs sm:text-sm hover:text-rose-600 transition-colors line-clamp-2"
                           >
                             {item.productName}
                           </Link>
-                          <p className="text-[11px] text-slate-400">SKU: {item.sku}</p>
+                          <p className="text-[11px] text-slate-400 font-mono mt-0.5">SKU: {item.sku}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="py-3 px-2 text-center font-bold text-slate-700">
+                    <td className="py-4 px-4 text-center font-bold text-slate-700 align-middle">
                       {item.quantity}
                     </td>
-                    <td className="py-3 px-2 text-right text-slate-600 font-medium">
+                    <td className="py-4 px-4 text-right text-slate-600 font-medium align-middle">
                       {formatPrice(item.unitPrice)}
                     </td>
-                    <td className="py-3 px-2 text-right text-slate-900 font-extrabold">
+                    <td className="py-4 px-4 text-right text-slate-900 font-extrabold align-middle">
                       {formatPrice(item.totalPrice)}
                     </td>
                     {order.orderStatus === 'DELIVERED' && (
-                      <td className="py-3 px-2 text-right">
+                      <td className="py-4 px-4 text-center align-middle">
                         <Link
-                          to={`/products/${item.productId}#reviews`}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition-all shadow-2xs whitespace-nowrap"
+                          to={`/products/${item.productSlug || item.productId}#reviews`}
+                          className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition-all border border-rose-200 shadow-2xs whitespace-nowrap"
                         >
                           <Star className="w-3.5 h-3.5 fill-current" />
                           <span>Đánh giá</span>
@@ -291,27 +291,31 @@ export const OrderDetailPage: React.FC = () => {
                   </tr>
                 ))}
               </tbody>
+              <tfoot className="border-t-2 border-slate-100">
+                <tr>
+                  <td colSpan={3} className="pt-4 pb-1.5 px-4 text-right text-xs text-slate-500 font-medium">Tạm tính:</td>
+                  <td className="pt-4 pb-1.5 px-4 text-right font-bold text-slate-800 text-sm">{formatPrice(order.subtotal)}</td>
+                  {order.orderStatus === 'DELIVERED' && <td></td>}
+                </tr>
+                <tr>
+                  <td colSpan={3} className="py-1.5 px-4 text-right text-xs text-slate-500 font-medium">Phí vận chuyển:</td>
+                  <td className="py-1.5 px-4 text-right font-bold text-emerald-600 text-sm">Miễn phí</td>
+                  {order.orderStatus === 'DELIVERED' && <td></td>}
+                </tr>
+                {order.discountAmount > 0 && (
+                  <tr>
+                    <td colSpan={3} className="py-1.5 px-4 text-right text-xs text-slate-500 font-medium">Giảm giá:</td>
+                    <td className="py-1.5 px-4 text-right font-bold text-rose-600 text-sm">-{formatPrice(order.discountAmount)}</td>
+                    {order.orderStatus === 'DELIVERED' && <td></td>}
+                  </tr>
+                )}
+                <tr className="border-t border-slate-200">
+                  <td colSpan={3} className="pt-3 pb-2 px-4 text-right font-bold text-slate-900 text-sm sm:text-base">Tổng thanh toán:</td>
+                  <td className="pt-3 pb-2 px-4 text-right font-black text-rose-600 text-lg sm:text-xl">{formatPrice(order.grandTotal)}</td>
+                  {order.orderStatus === 'DELIVERED' && <td></td>}
+                </tr>
+              </tfoot>
             </table>
-          </div>
-
-          {/* Pricing summary */}
-          <div className="pt-4 border-t border-slate-100 mt-4 max-w-xs ml-auto space-y-2 text-sm">
-            <div className="flex justify-between text-slate-600 text-xs">
-              <span>Tạm tính</span>
-              <span className="font-semibold text-slate-900">{formatPrice(order.subtotal)}</span>
-            </div>
-            <div className="flex justify-between text-slate-600 text-xs">
-              <span>Phí vận chuyển</span>
-              <span className="text-emerald-600 font-semibold">Miễn phí</span>
-            </div>
-            <div className="flex justify-between text-slate-600 text-xs">
-              <span>Giảm giá</span>
-              <span className="font-semibold text-slate-900">{formatPrice(order.discountAmount)}</span>
-            </div>
-            <div className="pt-2 border-t border-slate-100 flex justify-between items-baseline">
-              <span className="font-bold text-slate-900">Tổng thanh toán</span>
-              <span className="text-xl font-black text-rose-600">{formatPrice(order.grandTotal)}</span>
-            </div>
           </div>
         </div>
       </div>

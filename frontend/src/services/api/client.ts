@@ -39,6 +39,9 @@ apiClient.interceptors.response.use(
       error.response?.data?.error ||
       error.message ||
       'Đã có lỗi xảy ra khi kết nối máy chủ';
-    return Promise.reject(new Error(message));
+    const errObj: any = new Error(message);
+    errObj.response = error.response;
+    errObj.status = error.response?.status;
+    return Promise.reject(errObj);
   }
 );

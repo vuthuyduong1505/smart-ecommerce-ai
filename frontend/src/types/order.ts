@@ -15,6 +15,7 @@ export interface OrderItemResponse {
   productId: string;
   sku: string;
   productName: string;
+  productSlug?: string;
   thumbnailUrl?: string;
   unitPrice: number;
   quantity: number;

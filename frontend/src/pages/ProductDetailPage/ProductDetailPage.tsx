@@ -43,7 +43,8 @@ export const ProductDetailPage: React.FC = () => {
   const [actionLoading, setActionLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!slug) {
+    const cleanSlug = slug ? slug.split('#')[0].split('?')[0].trim() : '';
+    if (!cleanSlug) {
       setNotFound(true);
       setLoading(false);
       return;
@@ -55,13 +56,18 @@ export const ProductDetailPage: React.FC = () => {
         setError(null);
         setNotFound(false);
         let data: Product;
-        try {
-          data = await productService.getProductBySlug(slug);
-        } catch (err: any) {
-          if (err.response?.status === 404) {
-            data = await productService.getProductById(slug);
-          } else {
-            throw err;
+        const isObjectId = /^[0-9a-fA-F]{24}$/.test(cleanSlug);
+        if (isObjectId) {
+          try {
+            data = await productService.getProductById(cleanSlug);
+          } catch (e: any) {
+            data = await productService.getProductBySlug(cleanSlug);
+          }
+        } else {
+          try {
+            data = await productService.getProductBySlug(cleanSlug);
+          } catch (e: any) {
+            data = await productService.getProductById(cleanSlug);
           }
         }
         setProduct(data);
@@ -70,10 +76,10 @@ export const ProductDetailPage: React.FC = () => {
           (data.images && data.images.length > 0 ? data.images[0] : '');
         setSelectedImage(defaultImg);
       } catch (err: any) {
-        if (err.response?.status === 404) {
+        if (err.response?.status === 404 || err.status === 404) {
           setNotFound(true);
         } else {
-          setError(err.response?.data?.message || 'Không thể tải thông tin chi tiết sản phẩm');
+          setError(err.response?.data?.message || err.message || 'Không thể tải thông tin chi tiết sản phẩm');
         }
       } finally {
         setLoading(false);
@@ -81,7 +87,9 @@ export const ProductDetailPage: React.FC = () => {
     };
 
     fetchDetail();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (!window.location.hash) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }, [slug]);
 
   const handleAddToCart = async () => {

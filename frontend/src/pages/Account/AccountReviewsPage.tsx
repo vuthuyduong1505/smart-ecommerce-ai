@@ -22,6 +22,7 @@ import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 interface ReviewableItem {
   productId: string;
   productName: string;
+  productSlug?: string;
   thumbnailUrl?: string;
   orderCode: string;
 }
@@ -69,6 +70,7 @@ export const AccountReviewsPage: React.FC = () => {
             itemsMap.set(item.productId, {
               productId: item.productId,
               productName: item.productName,
+              productSlug: item.productSlug,
               thumbnailUrl: item.thumbnailUrl,
               orderCode: order.orderCode,
             });
@@ -235,7 +237,7 @@ export const AccountReviewsPage: React.FC = () => {
                       </div>
                       <div className="min-w-0">
                         <Link
-                          to={`/products/${item.productId}`}
+                          to={`/products/${item.productSlug || item.productId}`}
                           className="font-bold text-xs sm:text-sm text-slate-900 hover:text-rose-600 transition-colors line-clamp-1"
                         >
                           {item.productName}
@@ -244,7 +246,7 @@ export const AccountReviewsPage: React.FC = () => {
                       </div>
                     </div>
                     <Link
-                      to={`/products/${item.productId}#reviews`}
+                      to={`/products/${item.productSlug || item.productId}#reviews`}
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl bg-rose-600 hover:bg-rose-700 text-white shadow-xs shrink-0 transition-colors"
                     >
                       <Star className="w-3.5 h-3.5 fill-white" />

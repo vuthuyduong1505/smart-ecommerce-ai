@@ -242,7 +242,7 @@ export const OrderListPage: React.FC = () => {
                             {item.quantity}×
                           </span>
                           <Link
-                            to={`/products/${item.productId}`}
+                            to={`/products/${item.productSlug || item.productId}`}
                             className="font-medium text-slate-800 hover:text-rose-600 transition-colors truncate"
                           >
                             {item.productName}
@@ -254,7 +254,7 @@ export const OrderListPage: React.FC = () => {
                           </span>
                           {order.orderStatus === 'DELIVERED' && (
                             <Link
-                              to={`/products/${item.productId}#reviews`}
+                              to={`/products/${item.productSlug || item.productId}#reviews`}
                               className="inline-flex items-center gap-1 text-[11px] font-bold text-rose-600 hover:underline bg-rose-50 px-2 py-0.5 rounded-md"
                             >
                               <Star className="w-3 h-3 fill-rose-600" />

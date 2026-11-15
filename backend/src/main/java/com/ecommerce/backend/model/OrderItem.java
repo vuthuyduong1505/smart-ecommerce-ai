@@ -23,6 +23,8 @@ public class OrderItem {
     @NotBlank(message = "Tên sản phẩm không được để trống")
     private String productName;
 
+    private String productSlug;
+
     private String thumbnailUrl;
 
     @NotNull(message = "Đơn giá không được để trống")
@@ -42,11 +44,12 @@ public class OrderItem {
 
     public OrderItem() {}
 
-    public OrderItem(String productId, String sku, String productName, String thumbnailUrl,
+    public OrderItem(String productId, String sku, String productName, String productSlug, String thumbnailUrl,
                      BigDecimal unitPrice, Integer quantity) {
         this.productId = productId;
         this.sku = sku;
         this.productName = productName;
+        this.productSlug = productSlug;
         this.thumbnailUrl = thumbnailUrl;
         this.unitPrice = unitPrice;
         this.quantity = quantity;
@@ -55,6 +58,11 @@ public class OrderItem {
         if (unitPrice != null && quantity != null) {
             this.totalPrice = unitPrice.multiply(BigDecimal.valueOf(quantity));
         }
+    }
+
+    public OrderItem(String productId, String sku, String productName, String thumbnailUrl,
+                     BigDecimal unitPrice, Integer quantity) {
+        this(productId, sku, productName, null, thumbnailUrl, unitPrice, quantity);
     }
 
     public String getProductId() {
@@ -79,6 +87,14 @@ public class OrderItem {
 
     public void setProductName(String productName) {
         this.productName = productName;
+    }
+
+    public String getProductSlug() {
+        return productSlug;
+    }
+
+    public void setProductSlug(String productSlug) {
+        this.productSlug = productSlug;
     }
 
     public String getThumbnailUrl() {

@@ -130,6 +130,7 @@ public class OrderService {
                         product.getId(),
                         product.getSku(),
                         product.getName(),
+                        product.getSlug(),
                         product.getThumbnailUrl(),
                         unitPrice,
                         cartItem.getQuantity()
@@ -394,6 +395,12 @@ public class OrderService {
                 itemResp.setProductId(item.getProductId());
                 itemResp.setSku(item.getSku());
                 itemResp.setProductName(item.getProductName());
+                String slug = item.getProductSlug();
+                if (slug == null || slug.isEmpty()) {
+                    Product p = productRepository.findById(item.getProductId()).orElse(null);
+                    if (p != null) slug = p.getSlug();
+                }
+                itemResp.setProductSlug(slug);
                 itemResp.setThumbnailUrl(item.getThumbnailUrl());
                 itemResp.setUnitPrice(item.getUnitPrice());
                 itemResp.setQuantity(item.getQuantity());
