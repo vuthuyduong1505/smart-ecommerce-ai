@@ -4,6 +4,10 @@ server:
 spring:
   application:
     name: smart-ecommerce-backend
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://${MONGODB_HOST:localhost}:${MONGODB_PORT:27017}/${MONGODB_DATABASE:smart_ecommerce_db}}
+      auto-index-creation: false
 
 management:
   endpoints:
@@ -14,3 +18,6 @@ management:
     health:
       show-details: always
 
+app:
+  seed:
+    enabled: ${APP_SEED_ENABLED:true}

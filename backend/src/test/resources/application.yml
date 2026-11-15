@@ -1,0 +1,14 @@
+spring:
+  data:
+    mongodb:
+      auto-index-creation: false
+
+management:
+  health:
+    mongo:
+      enabled: false
+
+app:
+  seed:
+    enabled: false
+
