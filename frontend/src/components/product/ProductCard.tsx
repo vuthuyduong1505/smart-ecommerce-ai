@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Cpu, HardDrive, Eye, CheckCircle2, XCircle } from 'lucide-react';
 import type { Product } from '../../types/product';
 import { formatCurrency, calculateDiscountPercent } from '../../utils/formatters';
+import { ProductThumbnail } from '../common/ProductThumbnail';
 
 interface ProductCardProps {
   product: Product;
@@ -15,10 +16,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const storage = product.attributes?.storage?.capacityGb;
   const display = product.attributes?.display?.sizeInches;
   const gpu = product.attributes?.gpu?.model;
-
-  // Placeholder SVG image with product title initials if no image provided
-  const placeholderImage = `https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=600&q=80`;
-  const displayImage = product.thumbnailUrl || (product.images && product.images.length > 0 ? product.images[0] : placeholderImage);
 
   return (
     <div className="group bg-white rounded-2xl border border-slate-200/80 hover:border-rose-300 hover:shadow-xl hover:shadow-slate-200/60 transition-all duration-300 flex flex-col h-full overflow-hidden relative">
@@ -45,15 +42,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       </div>
 
       {/* Product Image */}
-      <Link to={`/products/${product.slug}`} className="block relative pt-[65%] overflow-hidden bg-slate-50">
-        <img
-          src={displayImage}
+      <Link to={`/products/${product.slug}`} className="block relative overflow-hidden bg-slate-50 group">
+        <ProductThumbnail
+          src={product.thumbnailUrl || (product.images && product.images.length > 0 ? product.images[0] : undefined)}
           alt={product.name}
-          loading="lazy"
-          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = placeholderImage;
-          }}
+          brandName={product.brandName}
+          aspectRatio="aspect-16/10"
         />
       </Link>
 

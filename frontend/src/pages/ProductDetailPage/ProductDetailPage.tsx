@@ -6,16 +6,17 @@ import {
   XCircle,
   ShoppingCart,
   Zap,
-  ShieldCheck,
-  Truck,
-  RotateCcw,
-  Sparkles,
   ChevronRight,
   Share2,
+  FileText,
+  CheckCircle2,
+  Layers,
+  Package,
 } from 'lucide-react';
 import { productService } from '../../services/productService';
 import type { Product } from '../../types/product';
 import { ProductSpecTable } from '../../components/product/ProductSpecTable';
+import { ProductThumbnail } from '../../components/common/ProductThumbnail';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { ErrorState } from '../../components/common/ErrorState';
 import { formatCurrency, calculateDiscountPercent } from '../../utils/formatters';
@@ -65,7 +66,7 @@ export const ProductDetailPage: React.FC = () => {
   }, [slug]);
 
   const showPlaceholderActionToast = (actionName: string) => {
-    setToastMessage(`Tính năng "${actionName}" sẽ được kích hoạt ở các giai đoạn tiếp theo!`);
+    setToastMessage(`Chức năng "${actionName}" đang ở trạng thái giao diện thử nghiệm (chưa có nghiệp vụ giỏ hàng/thanh toán).`);
     setTimeout(() => {
       setToastMessage(null);
     }, 3500);
@@ -74,7 +75,7 @@ export const ProductDetailPage: React.FC = () => {
   if (loading) {
     return (
       <div className="py-24">
-        <LoadingSpinner message="Đang tải thông tin chi tiết sản phẩm..." />
+        <LoadingSpinner message="Đang tải thông tin chi tiết sản phẩm từ Catalog..." />
       </div>
     );
   }
@@ -89,7 +90,7 @@ export const ProductDetailPage: React.FC = () => {
           Không tìm thấy sản phẩm
         </h1>
         <p className="text-slate-600 mb-8 max-w-md mx-auto">
-          Sản phẩm bạn đang tìm kiếm có thể đã bị ngừng kinh doanh hoặc đường dẫn không chính xác.
+          Sản phẩm bạn đang tìm kiếm không tồn tại trong Catalog dữ liệu hoặc đường dẫn không chính xác.
         </p>
         <div className="flex justify-center gap-4">
           <button
@@ -102,7 +103,7 @@ export const ProductDetailPage: React.FC = () => {
             to="/products"
             className="inline-flex items-center gap-2 px-6 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-xl transition-all shadow-md"
           >
-            Xem tất cả laptop
+            Xem danh sách Laptop
           </Link>
         </div>
       </div>
@@ -132,9 +133,9 @@ export const ProductDetailPage: React.FC = () => {
     <div className="bg-slate-50/60 pb-16">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-slate-700 animate-slide-up">
-          <Sparkles className="w-5 h-5 text-amber-400 shrink-0" />
-          <span className="text-sm font-medium">{toastMessage}</span>
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-slate-700 animate-slide-up max-w-md">
+          <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
+          <span className="text-xs font-medium leading-relaxed">{toastMessage}</span>
         </div>
       )}
 
@@ -172,33 +173,27 @@ export const ProductDetailPage: React.FC = () => {
         {/* Main Product Box */}
         <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs p-6 lg:p-8 mb-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-            {/* Left: Gallery */}
+            {/* Left: Product Media */}
             <div className="lg:col-span-5 flex flex-col">
-              {/* Main Image */}
-              <div className="relative aspect-4/3 w-full bg-slate-50 rounded-2xl border border-slate-200/70 overflow-hidden flex items-center justify-center p-6 mb-4">
-                {selectedImage ? (
-                  <img
-                    src={selectedImage}
-                    alt={product.name}
-                    className="w-full h-full object-contain transition-transform duration-300 hover:scale-105"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src =
-                        'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=800&q=80';
-                    }}
-                  />
-                ) : (
-                  <div className="text-slate-400 text-sm font-medium">Chưa có ảnh</div>
-                )}
+              {/* Main Image Preview */}
+              <div className="relative rounded-2xl overflow-hidden border border-slate-200/70 mb-4 bg-slate-50">
+                <ProductThumbnail
+                  src={selectedImage}
+                  alt={product.name}
+                  brandName={product.brandName}
+                  aspectRatio="aspect-4/3"
+                  isDetail={true}
+                />
 
                 {discountPercent != null && discountPercent > 0 && (
-                  <span className="absolute top-4 left-4 bg-rose-600 text-white text-xs font-bold px-2.5 py-1 rounded-lg shadow-sm">
+                  <span className="absolute top-4 left-4 bg-rose-600 text-white text-xs font-bold px-2.5 py-1 rounded-lg shadow-sm z-10">
                     Giảm {discountPercent}%
                   </span>
                 )}
               </div>
 
-              {/* Thumbnails */}
-              {images.length > 1 && (
+              {/* Thumbnails list if multiple */}
+              {images.length > 1 && !selectedImage.includes('example.com') && (
                 <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
                   {images.map((img, idx) => (
                     <button
@@ -215,8 +210,7 @@ export const ProductDetailPage: React.FC = () => {
                         alt={`${product.name} thumbnail ${idx}`}
                         className="w-full h-full object-contain"
                         onError={(e) => {
-                          (e.target as HTMLImageElement).src =
-                            'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=800&q=80';
+                          (e.target as HTMLElement).style.display = 'none';
                         }}
                       />
                     </button>
@@ -224,23 +218,23 @@ export const ProductDetailPage: React.FC = () => {
                 </div>
               )}
 
-              {/* Assurance Box */}
-              <div className="mt-6 grid grid-cols-2 gap-3 text-xs text-slate-600">
-                <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-xl">
-                  <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
-                  <span>Bảo hành chính hãng 12-24 tháng</span>
+              {/* Technical / Catalog Attributes Note */}
+              <div className="mt-4 grid grid-cols-2 gap-2.5 text-xs text-slate-600">
+                <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                  <FileText className="w-4 h-4 text-slate-600 shrink-0" />
+                  <span className="font-medium text-[11px]">Thông số từ nhà sản xuất</span>
                 </div>
-                <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-xl">
-                  <Truck className="w-5 h-5 text-blue-600 shrink-0" />
-                  <span>Miễn phí giao hàng toàn quốc</span>
+                <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span className="font-medium text-[11px]">Dữ liệu Catalog xác thực</span>
                 </div>
-                <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-xl">
-                  <RotateCcw className="w-5 h-5 text-purple-600 shrink-0" />
-                  <span>1 đổi 1 trong 30 ngày nếu lỗi</span>
+                <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                  <Layers className="w-4 h-4 text-blue-600 shrink-0" />
+                  <span className="font-medium text-[11px]">Phân loại cấu hình chi tiết</span>
                 </div>
-                <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-xl">
-                  <Sparkles className="w-5 h-5 text-amber-500 shrink-0" />
-                  <span>Hỗ trợ cài đặt phần mềm AI</span>
+                <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                  <Package className="w-4 h-4 text-amber-600 shrink-0" />
+                  <span className="font-medium text-[11px]">Số lượng kho thực tế</span>
                 </div>
               </div>
             </div>
@@ -249,11 +243,11 @@ export const ProductDetailPage: React.FC = () => {
             <div className="lg:col-span-7 flex flex-col">
               {/* Brand and SKU */}
               <div className="flex items-center justify-between gap-4 mb-2">
-                <span className="text-xs font-bold text-rose-600 uppercase tracking-wider bg-rose-50 px-3 py-1 rounded-md">
+                <span className="text-xs font-bold text-rose-600 uppercase tracking-wider bg-rose-50 px-3 py-1 rounded-md border border-rose-100">
                   {product.brandName}
                 </span>
                 <span className="text-xs text-slate-400 font-mono">
-                  Mã SP: {product.sku}
+                  Mã SKU: {product.sku}
                 </span>
               </div>
 
@@ -267,7 +261,7 @@ export const ProductDetailPage: React.FC = () => {
                 {product.inStock ? (
                   <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
                     <CheckCircle className="w-4 h-4 text-emerald-600" />
-                    Còn hàng ({product.inventory?.availableStock ?? 0} máy sẵn có)
+                    Còn hàng ({product.inventory?.availableStock ?? 0} máy sẵn có trong kho)
                   </div>
                 ) : (
                   <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-700 bg-rose-50 px-3 py-1 rounded-full border border-rose-200">
@@ -283,7 +277,7 @@ export const ProductDetailPage: React.FC = () => {
 
               {/* Price Block */}
               <div className="bg-slate-50/80 p-5 rounded-2xl border border-slate-200/80 mb-6">
-                <div className="text-xs text-slate-500 font-medium mb-1">Giá bán ưu đãi:</div>
+                <div className="text-xs text-slate-500 font-medium mb-1">Giá bán niêm yết:</div>
                 <div className="flex items-baseline flex-wrap gap-3">
                   <span className="text-3xl sm:text-4xl font-extrabold text-rose-600">
                     {formatCurrency(product.salePrice)}
@@ -299,8 +293,8 @@ export const ProductDetailPage: React.FC = () => {
                     </span>
                   )}
                 </div>
-                <div className="text-xs text-slate-500 mt-2">
-                  * Đã bao gồm thuế VAT và chế độ bảo hành chuẩn của hãng.
+                <div className="text-xs text-slate-400 mt-2">
+                  * Giá tham chiếu từ hệ thống dữ liệu Catalog sản phẩm.
                 </div>
               </div>
 
@@ -308,7 +302,7 @@ export const ProductDetailPage: React.FC = () => {
               {product.attributes && (
                 <div className="mb-6">
                   <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2.5">
-                    Thông số nổi bật:
+                    Tóm tắt cấu hình chính:
                   </h3>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs">
                     {product.attributes.cpu?.model && (
@@ -368,7 +362,7 @@ export const ProductDetailPage: React.FC = () => {
                 </div>
               )}
 
-              {/* Action Buttons */}
+              {/* Action Buttons (Placeholders) */}
               <div className="mt-auto pt-4 flex flex-col sm:flex-row gap-3">
                 <button
                   type="button"
@@ -408,44 +402,46 @@ export const ProductDetailPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Detailed Specs & Description Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Left Column: Full Description */}
-          <div className="lg:col-span-7 bg-white rounded-3xl border border-slate-200/80 p-6 lg:p-8 shadow-xs">
-            <h2 className="text-xl font-bold text-slate-900 mb-4 pb-3 border-b border-slate-100">
-              Đặc điểm nổi bật & Mô tả chi tiết
-            </h2>
-            <div className="prose prose-slate max-w-none text-slate-700 text-sm leading-relaxed space-y-4">
-              {product.description ? (
-                <div className="whitespace-pre-line">{product.description}</div>
-              ) : (
-                <p>
-                  Sản phẩm <strong>{product.name}</strong> đến từ thương hiệu <strong>{product.brandName}</strong> được trang bị cấu hình tối ưu phục vụ nhu cầu làm việc, học tập và giải trí chuyên nghiệp. Thiết kế hiện đại, độ bền cao cùng hệ thống tản nhiệt tối ưu mang đến trải nghiệm làm việc mượt mà và bền bỉ trong suốt thời gian dài.
-                </p>
-              )}
-            </div>
-
-            {/* Product Tags */}
-            {product.tags && product.tags.length > 0 && (
-              <div className="mt-8 pt-4 border-t border-slate-100">
-                <span className="text-xs font-semibold text-slate-400 block mb-2">Thẻ từ khóa:</span>
-                <div className="flex flex-wrap gap-2">
-                  {product.tags.map((tag, idx) => (
-                    <span
-                      key={idx}
-                      className="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-md text-xs font-medium"
-                    >
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
+        {/* Detailed Specs & Description Section - Optimized Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Left Column (Wide): Full Specifications Table */}
+          <div className="lg:col-span-7">
+            <ProductSpecTable attributes={product.attributes} />
           </div>
 
-          {/* Right Column: Full Specifications Table */}
-          <div className="lg:col-span-5">
-            <ProductSpecTable attributes={product.attributes} />
+          {/* Right Column: Full Description & Tags */}
+          <div className="lg:col-span-5 space-y-6">
+            <div className="bg-white rounded-3xl border border-slate-200/80 p-6 lg:p-7 shadow-xs">
+              <h2 className="text-lg font-bold text-slate-900 mb-4 pb-3 border-b border-slate-100">
+                Đặc điểm nổi bật & Mô tả sản phẩm
+              </h2>
+              <div className="prose prose-slate max-w-none text-slate-700 text-sm leading-relaxed space-y-4">
+                {product.description ? (
+                  <div className="whitespace-pre-line">{product.description}</div>
+                ) : (
+                  <p>
+                    Sản phẩm <strong>{product.name}</strong> thuộc phân khúc laptop chính hãng của thương hiệu <strong>{product.brandName}</strong>. Các thông số phần cứng được thể hiện chi tiết tại bảng cấu hình bên cạnh, phản ánh chính xác dữ liệu từ Catalog hệ thống.
+                  </p>
+                )}
+              </div>
+
+              {/* Product Tags */}
+              {product.tags && product.tags.length > 0 && (
+                <div className="mt-6 pt-4 border-t border-slate-100">
+                  <span className="text-xs font-semibold text-slate-400 block mb-2">Thẻ từ khóa:</span>
+                  <div className="flex flex-wrap gap-2">
+                    {product.tags.map((tag, idx) => (
+                      <span
+                        key={idx}
+                        className="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-md text-xs font-medium"
+                      >
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

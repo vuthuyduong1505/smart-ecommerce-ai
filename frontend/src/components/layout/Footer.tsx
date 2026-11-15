@@ -1,51 +1,51 @@
 import React from 'react';
-import { Laptop, ShieldCheck, Truck, RotateCcw, Headphones, Heart } from 'lucide-react';
+import { Laptop, Database, Cpu, Filter, Sparkles, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const Footer: React.FC = () => {
   return (
     <footer className="bg-slate-900 text-slate-300 mt-20 border-t border-slate-800">
-      {/* Policy banner */}
+      {/* Platform feature highlights banner */}
       <div className="border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="flex items-center gap-3.5">
               <div className="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center text-rose-500 shrink-0">
-                <Truck className="w-6 h-6" />
+                <Database className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="text-sm font-semibold text-white">Miễn phí vận chuyển</h4>
-                <p className="text-xs text-slate-400 mt-0.5">Giao nhanh toàn quốc trong 2-4h</p>
+                <h4 className="text-sm font-semibold text-white">Dữ liệu Catalog Chuẩn</h4>
+                <p className="text-xs text-slate-400 mt-0.5">Đồng bộ trực tiếp từ MongoDB</p>
               </div>
             </div>
 
             <div className="flex items-center gap-3.5">
               <div className="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center text-rose-500 shrink-0">
-                <ShieldCheck className="w-6 h-6" />
+                <Cpu className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="text-sm font-semibold text-white">Chính hãng 100%</h4>
-                <p className="text-xs text-slate-400 mt-0.5">Cam kết xuất xứ & bảo hành 1 đổi 1</p>
+                <h4 className="text-sm font-semibold text-white">Thông số minh bạch</h4>
+                <p className="text-xs text-slate-400 mt-0.5">Chi tiết CPU, RAM, GPU, Màn hình</p>
               </div>
             </div>
 
             <div className="flex items-center gap-3.5">
               <div className="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center text-rose-500 shrink-0">
-                <RotateCcw className="w-6 h-6" />
+                <Filter className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="text-sm font-semibold text-white">Đổi trả 30 ngày</h4>
-                <p className="text-xs text-slate-400 mt-0.5">Thủ tục nhanh chóng nếu có lỗi</p>
+                <h4 className="text-sm font-semibold text-white">Bộ lọc đa tiêu chí</h4>
+                <p className="text-xs text-slate-400 mt-0.5">Lọc theo hãng, khoảng giá & nhu cầu</p>
               </div>
             </div>
 
             <div className="flex items-center gap-3.5">
               <div className="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center text-rose-500 shrink-0">
-                <Headphones className="w-6 h-6" />
+                <Sparkles className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="text-sm font-semibold text-white">AI Advisor 24/7</h4>
-                <p className="text-xs text-slate-400 mt-0.5">Hỗ trợ tư vấn thông minh mọi lúc</p>
+                <h4 className="text-sm font-semibold text-white">Định hướng AI R&D</h4>
+                <p className="text-xs text-slate-400 mt-0.5">Nghiên cứu trợ lý mua sắm thông minh</p>
               </div>
             </div>
           </div>
@@ -66,12 +66,8 @@ export const Footer: React.FC = () => {
               </span>
             </div>
             <p className="text-xs text-slate-400 leading-relaxed">
-              Hệ thống bán lẻ laptop thông minh thế hệ mới, ứng dụng AI trong tìm kiếm và đề xuất cá nhân hóa.
+              Nền tảng thương mại điện tử chuyên biệt quản lý và tra cứu danh mục máy tính xách tay, hướng tới tích hợp trí tuệ nhân tạo hỗ trợ người dùng.
             </p>
-            <div className="text-xs text-slate-400 space-y-1 pt-1">
-              <p>Hotline tư vấn: <span className="text-white font-semibold">1800 6969</span> (8h00 - 21h30)</p>
-              <p>Email: <span className="text-white font-semibold">support@smartecommerce.local</span></p>
-            </div>
           </div>
 
           {/* Categories */}
@@ -98,14 +94,14 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Policies & Info */}
+          {/* System & Architecture Info */}
           <div>
-            <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-3">Chính Sách & Hỗ Trợ</h4>
+            <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-3">Thông Tin Hệ Thống</h4>
             <ul className="space-y-2 text-xs text-slate-400">
-              <li className="hover:text-white cursor-pointer transition-colors">Chính sách bảo hành toàn diện</li>
-              <li className="hover:text-white cursor-pointer transition-colors">Chính sách giao hàng & kiểm tra</li>
-              <li className="hover:text-white cursor-pointer transition-colors">Chính sách bảo mật thông tin</li>
-              <li className="hover:text-white cursor-pointer transition-colors">Hướng dẫn mua trả góp 0%</li>
+              <li className="hover:text-white transition-colors">Quy chuẩn dữ liệu Catalog v1.2.1</li>
+              <li className="hover:text-white transition-colors">Quy trình kiểm thử tích hợp API</li>
+              <li className="hover:text-white transition-colors">Hướng dẫn tra cứu & lọc cấu hình</li>
+              <li className="hover:text-white transition-colors">Mô hình kiến trúc Spring Boot & React</li>
             </ul>
           </div>
         </div>
@@ -123,4 +119,3 @@ export const Footer: React.FC = () => {
     </footer>
   );
 };
-

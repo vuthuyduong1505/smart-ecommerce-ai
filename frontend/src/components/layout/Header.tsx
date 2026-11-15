@@ -7,8 +7,6 @@ import {
   Laptop,
   Menu,
   X,
-  PhoneCall,
-  Sparkles,
 } from 'lucide-react';
 
 export const Header: React.FC = () => {
@@ -33,12 +31,6 @@ export const Header: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-xs">
-      {/* Top micro banner */}
-      <div className="bg-rose-600 text-white text-xs py-1.5 px-4 text-center font-medium flex items-center justify-center gap-2">
-        <Sparkles className="w-3.5 h-3.5" />
-        <span>Chuyên trang Laptop Thông minh tích hợp AI Advisor – Bảo hành chính hãng 12-24 tháng</span>
-      </div>
-
       {/* Main navigation header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20 gap-4">
@@ -97,17 +89,6 @@ export const Header: React.FC = () => {
             >
               <span>Xem tất cả Laptop</span>
             </Link>
-
-            {/* Hotline (hidden on small) */}
-            <div className="hidden xl:flex items-center gap-2 text-slate-700 border-l border-slate-200 pl-3">
-              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
-                <PhoneCall className="w-4 h-4" />
-              </div>
-              <div className="text-left text-xs leading-tight">
-                <span className="text-slate-400 block text-[10px]">Tư vấn miễn phí</span>
-                <span className="font-bold text-slate-900">1800 6969</span>
-              </div>
-            </div>
 
             {/* User Account Button (Placeholder) */}
             <button

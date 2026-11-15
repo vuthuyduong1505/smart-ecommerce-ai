@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, ArrowRight, ShieldCheck, Zap, Bot } from 'lucide-react';
+import { ArrowRight, Zap, Database, Cpu, CheckCircle2 } from 'lucide-react';
 
 export const HeroBanner: React.FC = () => {
   return (
@@ -12,22 +12,22 @@ export const HeroBanner: React.FC = () => {
       <div className="relative px-6 py-12 sm:px-12 sm:py-16 lg:py-20 max-w-4xl">
         {/* Sub badge */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-semibold text-rose-300 mb-6">
-          <Bot className="w-4 h-4 text-rose-400" />
-          <span>Hệ Thống Mua Sắm Laptop Thông Minh – Trợ Lý AI RAG</span>
+          <Database className="w-4 h-4 text-rose-400" />
+          <span>Hệ Thống Catalog & Quản Lý Dữ Liệu Laptop</span>
         </div>
 
         {/* Heading */}
         <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight sm:leading-none text-white mb-6">
-          Tìm Kiếm Chiếc Laptop <br className="hidden sm:block" />
+          Tra Cứu Dòng Laptop <br className="hidden sm:block" />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-rose-300 to-amber-300">
-            Hoàn Hảo Cho Nhu Cầu Của Bạn
+            Theo Cấu Hình & Nhu Cầu
           </span>
         </h1>
 
         {/* Description */}
         <p className="text-sm sm:text-base text-slate-300 max-w-2xl mb-8 leading-relaxed">
-          Khám phá hơn 20 mẫu laptop cao cấp từ Apple, Dell, Asus, Lenovo, HP, Acer, MSI. 
-          Định cấu hình chuẩn xác, giá niêm yết rõ ràng, hỗ trợ trả góp 0% và bảo hành chính hãng toàn diện.
+          Khám phá danh mục laptop từ Apple, Dell, Asus, Lenovo, HP, Acer, MSI. 
+          Tra cứu thông số kỹ thuật chi tiết, theo dõi tình trạng kho và phân loại theo nhu cầu sử dụng thực tế.
         </p>
 
         {/* CTA buttons */}
@@ -45,27 +45,26 @@ export const HeroBanner: React.FC = () => {
             className="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-sm backdrop-blur-md border border-white/10 transition-colors"
           >
             <Zap className="w-4 h-4 text-amber-400" />
-            <span>Laptop Gaming RTX 40 Series</span>
+            <span>Phân loại Laptop Gaming</span>
           </Link>
         </div>
 
         {/* Features pills */}
         <div className="mt-10 pt-8 border-t border-white/10 grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs text-slate-300">
           <div className="flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-            <span>100% Chính Hãng VAT</span>
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span>Dữ Liệu Catalog Chuẩn Hóa</span>
           </div>
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
-            <span>AI Đề Xuất Cấu Hình</span>
+            <Cpu className="w-4 h-4 text-amber-400 shrink-0" />
+            <span>Thông Số Kỹ Thuật Đầy Đủ</span>
           </div>
           <div className="flex items-center gap-2">
-            <Zap className="w-4 h-4 text-sky-400 shrink-0" />
-            <span>Giao Hỏa Tốc 2 Giờ</span>
+            <Database className="w-4 h-4 text-sky-400 shrink-0" />
+            <span>Theo Dõi Tồn Kho Thực Tế</span>
           </div>
         </div>
       </div>
     </div>
   );
 };
-

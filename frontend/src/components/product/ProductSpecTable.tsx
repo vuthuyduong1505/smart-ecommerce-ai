@@ -1,4 +1,13 @@
 import React from 'react';
+import {
+  Cpu,
+  HardDrive,
+  Monitor,
+  Battery,
+  Layers,
+  Zap,
+  Tag,
+} from 'lucide-react';
 import type { LaptopAttributes } from '../../types/product';
 import { formatUseCaseLabel } from '../../utils/formatters';
 
@@ -13,37 +22,57 @@ export const ProductSpecTable: React.FC<ProductSpecTableProps> = ({
 }) => {
   if (!attributes) {
     return (
-      <div className="p-6 text-sm text-slate-500 bg-slate-50 rounded-xl text-center">
-        Chưa có thông số kỹ thuật chi tiết cho sản phẩm này.
+      <div className="p-8 text-sm text-slate-500 bg-slate-50 rounded-2xl text-center border border-slate-200">
+        Chưa có thông số kỹ thuật chi tiết cho sản phẩm này trong Catalog.
       </div>
     );
   }
 
-  const specRows = [
+  const specGroups = [
     {
       group: 'Bộ xử lý (CPU)',
+      icon: <Cpu className="w-4 h-4 text-blue-600" />,
+      badgeColor: 'bg-blue-50 text-blue-700 border-blue-200',
       rows: [
         { label: 'Model CPU', value: attributes.cpu?.model },
-        { label: 'Số nhân / Số luồng', value: attributes.cpu?.cores ? `${attributes.cpu.cores} nhân` : undefined },
-        { label: 'Tốc độ tối đa', value: attributes.cpu?.boostClockGhz ? `${attributes.cpu.boostClockGhz} GHz` : undefined },
+        {
+          label: 'Số nhân / Số luồng',
+          value: attributes.cpu?.cores ? `${attributes.cpu.cores} nhân` : undefined,
+        },
+        {
+          label: 'Tốc độ xung nhịp tối đa',
+          value: attributes.cpu?.boostClockGhz ? `${attributes.cpu.boostClockGhz} GHz` : undefined,
+        },
       ],
     },
     {
-      group: 'Đồ họa (GPU)',
+      group: 'Card đồ họa (GPU)',
+      icon: <Zap className="w-4 h-4 text-purple-600" />,
+      badgeColor: 'bg-purple-50 text-purple-700 border-purple-200',
       rows: [
         { label: 'Model GPU', value: attributes.gpu?.model },
-        { label: 'Bộ nhớ VRAM', value: attributes.gpu?.vramGb ? `${attributes.gpu.vramGb} GB` : 'Shared' },
+        {
+          label: 'Bộ nhớ đồ họa VRAM',
+          value: attributes.gpu?.vramGb ? `${attributes.gpu.vramGb} GB` : 'Tích hợp (Shared)',
+        },
       ],
     },
     {
-      group: 'Bộ nhớ (RAM)',
+      group: 'Bộ nhớ trong (RAM)',
+      icon: <Layers className="w-4 h-4 text-emerald-600" />,
+      badgeColor: 'bg-emerald-50 text-emerald-700 border-emerald-200',
       rows: [
-        { label: 'Dung lượng RAM', value: attributes.ram?.capacityGb ? `${attributes.ram.capacityGb} GB` : undefined },
-        { label: 'Chuẩn RAM', value: attributes.ram?.ramType },
+        {
+          label: 'Dung lượng RAM',
+          value: attributes.ram?.capacityGb ? `${attributes.ram.capacityGb} GB` : undefined,
+        },
+        { label: 'Chuẩn RAM hỗ trợ', value: attributes.ram?.ramType },
       ],
     },
     {
-      group: 'Lưu trữ (Ổ cứng)',
+      group: 'Ổ cứng lưu trữ (Storage)',
+      icon: <HardDrive className="w-4 h-4 text-amber-600" />,
+      badgeColor: 'bg-amber-50 text-amber-700 border-amber-200',
       rows: [
         {
           label: 'Dung lượng ổ cứng',
@@ -57,43 +86,85 @@ export const ProductSpecTable: React.FC<ProductSpecTableProps> = ({
       ],
     },
     {
-      group: 'Màn hình (Display)',
+      group: 'Màn hình hiển thị (Display)',
+      icon: <Monitor className="w-4 h-4 text-indigo-600" />,
+      badgeColor: 'bg-indigo-50 text-indigo-700 border-indigo-200',
       rows: [
-        { label: 'Kích thước màn hình', value: attributes.display?.sizeInches ? `${attributes.display.sizeInches} inch` : undefined },
-        { label: 'Độ phân giải', value: attributes.display?.resolution },
-        { label: 'Tần số quét', value: attributes.display?.refreshRateHz ? `${attributes.display.refreshRateHz} Hz` : undefined },
+        {
+          label: 'Kích thước màn hình',
+          value: attributes.display?.sizeInches ? `${attributes.display.sizeInches} inch` : undefined,
+        },
+        { label: 'Độ phân giải hiển thị', value: attributes.display?.resolution },
+        {
+          label: 'Tần số quét màn hình',
+          value: attributes.display?.refreshRateHz ? `${attributes.display.refreshRateHz} Hz` : undefined,
+        },
       ],
     },
     {
-      group: 'Pin & Trọng lượng',
+      group: 'Pin & Trọng lượng máy (Physical)',
+      icon: <Battery className="w-4 h-4 text-rose-600" />,
+      badgeColor: 'bg-rose-50 text-rose-700 border-rose-200',
       rows: [
-        { label: 'Dung lượng Pin', value: attributes.battery?.capacityWh ? `${attributes.battery.capacityWh} Wh` : undefined },
-        { label: 'Trọng lượng máy', value: attributes.physical?.weightKg ? `${attributes.physical.weightKg} kg` : undefined },
+        {
+          label: 'Dung lượng Pin',
+          value: attributes.battery?.capacityWh ? `${attributes.battery.capacityWh} Wh` : undefined,
+        },
+        {
+          label: 'Trọng lượng máy',
+          value: attributes.physical?.weightKg ? `${attributes.physical.weightKg} kg` : undefined,
+        },
       ],
     },
   ];
 
   return (
-    <div className={`bg-white rounded-2xl border border-slate-200 overflow-hidden ${className}`}>
-      <div className="bg-slate-50/80 px-6 py-4 border-b border-slate-200">
-        <h3 className="text-base font-bold text-slate-900">Bảng Thông Số Kỹ Thuật Chi Tiết</h3>
+    <div className={`bg-white rounded-3xl border border-slate-200/90 shadow-xs overflow-hidden ${className}`}>
+      {/* Table Title Header */}
+      <div className="bg-slate-50/90 px-6 py-4.5 border-b border-slate-200 flex items-center justify-between">
+        <div>
+          <h3 className="text-base font-extrabold text-slate-900 tracking-tight">
+            Bảng Thông Số Kỹ Thuật Chi Tiết
+          </h3>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Dữ liệu cấu hình phần cứng trích xuất trực tiếp từ Catalog nhà sản xuất
+          </p>
+        </div>
       </div>
 
-      <div className="divide-y divide-slate-100">
-        {specRows.map((group, gIdx) => {
+      <div className="p-6 space-y-6">
+        {specGroups.map((group, gIdx) => {
           const visibleRows = group.rows.filter((r) => r.value != null);
           if (visibleRows.length === 0) return null;
 
           return (
-            <div key={gIdx} className="p-4 sm:p-5">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-rose-600 mb-3">
-                {group.group}
-              </h4>
-              <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
+            <div
+              key={gIdx}
+              className="rounded-2xl border border-slate-200/70 p-4 sm:p-5 bg-white shadow-2xs hover:border-slate-300 transition-colors"
+            >
+              {/* Group Title */}
+              <div className="flex items-center gap-2 mb-3.5 pb-2.5 border-b border-slate-100">
+                <span className="p-1.5 rounded-lg bg-slate-100/80">
+                  {group.icon}
+                </span>
+                <h4 className="text-sm font-bold text-slate-900">
+                  {group.group}
+                </h4>
+              </div>
+
+              {/* Rows: Optimized 2-Column Definition List */}
+              <dl className="space-y-1.5">
                 {visibleRows.map((row, rIdx) => (
-                  <div key={rIdx} className="flex justify-between sm:justify-start gap-4 py-1 border-b sm:border-b-0 border-slate-50">
-                    <dt className="text-slate-500 min-w-[130px] font-medium">{row.label}:</dt>
-                    <dd className="text-slate-900 font-semibold text-right sm:text-left">{row.value}</dd>
+                  <div
+                    key={rIdx}
+                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-6 py-2 px-3 rounded-xl even:bg-slate-50/70 hover:bg-slate-100/60 transition-colors"
+                  >
+                    <dt className="text-xs sm:text-sm font-medium text-slate-500 w-full sm:w-56 shrink-0">
+                      {row.label}:
+                    </dt>
+                    <dd className="text-xs sm:text-sm font-bold text-slate-900 flex-1 break-words">
+                      {row.value}
+                    </dd>
                   </div>
                 ))}
               </dl>
@@ -103,15 +174,18 @@ export const ProductSpecTable: React.FC<ProductSpecTableProps> = ({
 
         {/* Nhu cầu phù hợp */}
         {attributes.useCases && attributes.useCases.length > 0 && (
-          <div className="p-4 sm:p-5 bg-slate-50/50">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-rose-600 mb-2.5">
-              Nhu cầu sử dụng tối ưu
-            </h4>
+          <div className="rounded-2xl border border-slate-200/70 p-4 sm:p-5 bg-slate-50/60">
+            <div className="flex items-center gap-2 mb-3">
+              <Tag className="w-4 h-4 text-rose-600" />
+              <h4 className="text-sm font-bold text-slate-900">
+                Phân loại nhu cầu sử dụng tối ưu
+              </h4>
+            </div>
             <div className="flex flex-wrap gap-2">
               {attributes.useCases.map((uc, idx) => (
                 <span
                   key={idx}
-                  className="px-3 py-1 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 shadow-2xs"
+                  className="px-3 py-1.5 bg-white border border-slate-200/90 rounded-xl text-xs font-bold text-slate-800 shadow-2xs"
                 >
                   {formatUseCaseLabel(uc)}
                 </span>
@@ -123,4 +197,3 @@ export const ProductSpecTable: React.FC<ProductSpecTableProps> = ({
     </div>
   );
 };
-
