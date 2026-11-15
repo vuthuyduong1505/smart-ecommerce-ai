@@ -75,6 +75,14 @@ export const ProductDetailPage: React.FC = () => {
           data.thumbnailUrl ||
           (data.images && data.images.length > 0 ? data.images[0] : '');
         setSelectedImage(defaultImg);
+        if (window.location.hash === '#reviews') {
+          setTimeout(() => {
+            const el = document.getElementById('reviews');
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth' });
+            }
+          }, 200);
+        }
       } catch (err: any) {
         if (err.response?.status === 404 || err.status === 404) {
           setNotFound(true);

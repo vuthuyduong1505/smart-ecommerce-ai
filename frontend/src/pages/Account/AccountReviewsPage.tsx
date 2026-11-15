@@ -4,7 +4,6 @@ import {
   Star,
   MessageSquare,
   CheckCircle,
-  Clock,
   AlertCircle,
   Edit2,
   Trash2,
@@ -118,7 +117,7 @@ export const AccountReviewsPage: React.FC = () => {
         title: editTitle.trim(),
         content: editContent.trim(),
       });
-      setToastMessage('Cập nhật đánh giá thành công! Đánh giá sẽ được kiểm duyệt lại.');
+      setToastMessage('Cập nhật đánh giá thành công!');
       setIsEditModalOpen(false);
       fetchReviews();
     } catch (err: any) {
@@ -141,28 +140,17 @@ export const AccountReviewsPage: React.FC = () => {
 
   const renderStatusBadge = (status: string) => {
     switch (status) {
-      case 'APPROVED':
-        return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-            <CheckCircle className="w-3.5 h-3.5" />
-            Đã duyệt
-          </span>
-        );
       case 'REJECTED':
         return (
           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
             <AlertCircle className="w-3.5 h-3.5" />
-            Bị từ chối
+            Cần chỉnh sửa lại
           </span>
         );
+      case 'APPROVED':
       case 'PENDING':
       default:
-        return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-            <Clock className="w-3.5 h-3.5" />
-            Chờ duyệt
-          </span>
-        );
+        return null;
     }
   };
 
@@ -367,7 +355,7 @@ export const AccountReviewsPage: React.FC = () => {
                       <div>
                         <strong>Lý do từ chối:</strong> {rev.rejectionReason}
                         <div className="mt-1 text-slate-500 text-[11px]">
-                          Bạn có thể bấm "Chỉnh sửa" để điều chỉnh lại nội dung phù hợp và gửi duyệt lại.
+                          Bạn có thể bấm "Chỉnh sửa" để điều chỉnh lại nội dung phù hợp.
                         </div>
                       </div>
                     </div>
@@ -496,7 +484,7 @@ export const AccountReviewsPage: React.FC = () => {
                     disabled={submitting}
                     className="px-5 py-2.5 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 disabled:opacity-50 rounded-xl shadow-md shadow-rose-600/20 transition-all"
                   >
-                    {submitting ? 'Đang lưu...' : 'Lưu và Gửi duyệt'}
+                    {submitting ? 'Đang lưu...' : 'Lưu thay đổi'}
                   </button>
                 </div>
               </form>

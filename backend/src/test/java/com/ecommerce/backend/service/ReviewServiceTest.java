@@ -185,8 +185,8 @@ class ReviewServiceTest {
 
     // 7. createReview - Successful creation
     @Test
-    @DisplayName("Tạo đánh giá: Khách đủ điều kiện -> tạo thành công với status PENDING")
-    void createReview_eligibleUser_createsPendingReview() {
+    @DisplayName("Tạo đánh giá: Khách đủ điều kiện -> tạo thành công với status APPROVED và tự động cập nhật ratingSummary")
+    void createReview_eligibleUser_createsApprovedReview() {
         CreateReviewRequest req = new CreateReviewRequest(5, "Laptop rất tuyệt vời", "Máy chạy mượt mà, tản nhiệt rất mát.");
 
         when(productRepository.findById("prod123")).thenReturn(Optional.of(sampleProduct));
@@ -200,20 +200,21 @@ class ReviewServiceTest {
             r.setId("rev123");
             return r;
         });
+        when(reviewRepository.findByProductIdAndStatus("prod123", ReviewStatus.APPROVED)).thenReturn(Collections.emptyList());
 
         ReviewResponse resp = reviewService.createReview("user123", "prod123", req);
 
         assertNotNull(resp);
         assertEquals("rev123", resp.getId());
-        assertEquals(ReviewStatus.PENDING, resp.getStatus());
+        assertEquals(ReviewStatus.APPROVED, resp.getStatus());
         assertTrue(resp.getIsVerifiedPurchase());
         assertEquals(5, resp.getRating());
         assertEquals("Laptop rất tuyệt vời", resp.getTitle());
         assertEquals("order123", resp.getOrderId());
         assertEquals("ORD-20261116-0001", resp.getOrderCode());
 
-        // Verify that product ratingSummary is NOT yet updated (since status is PENDING)
-        verify(productRepository, never()).save(any(Product.class));
+        // Verify that product ratingSummary is updated immediately
+        verify(productRepository).save(any(Product.class));
     }
 
     // 8. createReview - Duplicate active review
@@ -269,40 +270,17 @@ class ReviewServiceTest {
         assertEquals("r1", resp.getContent().get(0).getId());
     }
 
-    // 11. updateMyReview - PENDING stays PENDING
+    // 11. updateMyReview - Updates content, keeps APPROVED and recomputes summary
     @Test
-    @DisplayName("Sửa đánh giá PENDING: Cập nhật nội dung, giữ nguyên status PENDING")
-    void updateMyReview_pendingReview_updatesContentAndKeepsPending() {
-        ProductReview existing = new ProductReview();
-        existing.setId("rev1");
-        existing.setUserId("user123");
-        existing.setProductId("prod123");
-        existing.setStatus(ReviewStatus.PENDING);
-        existing.setRating(3);
-        existing.setTitle("Tiêu đề cũ");
-
-        when(reviewRepository.findByIdAndUserIdAndStatusNot("rev1", "user123", ReviewStatus.DELETED))
-                .thenReturn(Optional.of(existing));
-        when(reviewRepository.save(any(ProductReview.class))).thenAnswer(inv -> inv.getArgument(0));
-
-        UpdateReviewRequest req = new UpdateReviewRequest(4, "Tiêu đề mới hơn", "Nội dung cập nhật mới.");
-        ReviewResponse resp = reviewService.updateMyReview("user123", "rev1", req);
-
-        assertEquals(4, resp.getRating());
-        assertEquals("Tiêu đề mới hơn", resp.getTitle());
-        assertEquals(ReviewStatus.PENDING, resp.getStatus());
-        verify(productRepository, never()).save(any(Product.class));
-    }
-
-    // 12. updateMyReview - APPROVED resets to PENDING and recomputes summary
-    @Test
-    @DisplayName("Sửa đánh giá APPROVED: Reset về PENDING và tính lại ratingSummary của sản phẩm")
-    void updateMyReview_approvedReview_resetsStatusToPendingAndRecomputesSummary() {
+    @DisplayName("Sửa đánh giá: Cập nhật nội dung, status APPROVED và tính lại ratingSummary của sản phẩm")
+    void updateMyReview_updatesContentAndRecomputesSummary() {
         ProductReview existing = new ProductReview();
         existing.setId("rev1");
         existing.setUserId("user123");
         existing.setProductId("prod123");
         existing.setStatus(ReviewStatus.APPROVED);
+        existing.setRating(3);
+        existing.setTitle("Tiêu đề cũ");
 
         when(reviewRepository.findByIdAndUserIdAndStatusNot("rev1", "user123", ReviewStatus.DELETED))
                 .thenReturn(Optional.of(existing));
@@ -310,12 +288,13 @@ class ReviewServiceTest {
         when(reviewRepository.findByProductIdAndStatus("prod123", ReviewStatus.APPROVED)).thenReturn(Collections.emptyList());
         when(productRepository.findById("prod123")).thenReturn(Optional.of(sampleProduct));
 
-        UpdateReviewRequest req = new UpdateReviewRequest(5, "Đánh giá lại 5 sao", "Sản phẩm dùng càng lâu càng ưng ý.");
+        UpdateReviewRequest req = new UpdateReviewRequest(4, "Tiêu đề mới hơn", "Nội dung cập nhật mới.");
         ReviewResponse resp = reviewService.updateMyReview("user123", "rev1", req);
 
-        assertEquals(ReviewStatus.PENDING, resp.getStatus());
+        assertEquals(4, resp.getRating());
+        assertEquals("Tiêu đề mới hơn", resp.getTitle());
+        assertEquals(ReviewStatus.APPROVED, resp.getStatus());
         verify(productRepository).save(any(Product.class));
-        assertEquals(0, sampleProduct.getRatingSummary().getTotalReviews());
     }
 
     // 13. updateMyReview - Not owner (IDOR)

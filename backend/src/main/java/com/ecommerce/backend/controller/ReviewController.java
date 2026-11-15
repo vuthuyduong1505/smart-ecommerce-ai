@@ -73,7 +73,7 @@ public class ReviewController {
     ) {
         ReviewResponse review = reviewService.createReview(userDetails.getId(), productId, request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success("Đánh giá đã được gửi và đang chờ kiểm duyệt.", review));
+                .body(ApiResponse.success("Đánh giá của bạn đã được đăng thành công.", review));
     }
 
     /**
@@ -99,7 +99,7 @@ public class ReviewController {
             @Valid @RequestBody UpdateReviewRequest request
     ) {
         ReviewResponse review = reviewService.updateMyReview(userDetails.getId(), reviewId, request);
-        return ResponseEntity.ok(ApiResponse.success("Cập nhật đánh giá thành công. Đánh giá sẽ được kiểm duyệt lại.", review));
+        return ResponseEntity.ok(ApiResponse.success("Cập nhật đánh giá thành công.", review));
     }
 
     /**

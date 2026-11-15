@@ -169,14 +169,14 @@ export const ProductReviewSection: React.FC<Props> = ({ productId, productName }
           title: modalTitle.trim(),
           content: modalContent.trim(),
         });
-        setActionSuccess('Cập nhật đánh giá thành công! Đánh giá sẽ được kiểm duyệt lại.');
+        setActionSuccess('Cập nhật đánh giá thành công!');
       } else {
         await reviewService.createReview(productId, {
           rating: modalRating,
           title: modalTitle.trim(),
           content: modalContent.trim(),
         });
-        setActionSuccess('Đánh giá của bạn đã được gửi thành công và đang chờ kiểm duyệt.');
+        setActionSuccess('Đánh giá của bạn đã được đăng thành công!');
       }
 
       setIsModalOpen(false);
@@ -243,16 +243,18 @@ export const ProductReviewSection: React.FC<Props> = ({ productId, productName }
               Viết đánh giá của bạn
             </button>
           ) : eligibility?.existingReview ? (
-            <div className="flex items-center gap-3">
-              <span className="text-xs px-3 py-1.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 font-medium">
-                Đánh giá của bạn: {eligibility.existingReview.status}
-              </span>
+            <div className="flex items-center gap-2">
+              {eligibility.existingReview.status === 'REJECTED' && (
+                <span className="text-xs px-3 py-1.5 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 font-medium">
+                  Đánh giá cần chỉnh sửa lại
+                </span>
+              )}
               <button
                 onClick={() => handleOpenEditModal(eligibility.existingReview!)}
-                className="text-xs font-semibold text-rose-600 hover:text-rose-700 flex items-center gap-1 underline"
+                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
               >
-                <Edit2 className="w-3.5 h-3.5" />
-                Chỉnh sửa
+                <Edit2 className="w-3.5 h-3.5 text-rose-600" />
+                Chỉnh sửa đánh giá của bạn
               </button>
             </div>
           ) : (

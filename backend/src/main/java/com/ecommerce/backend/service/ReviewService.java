@@ -181,12 +181,15 @@ public class ReviewService {
         review.setContent(req.getContent().trim());
 
         review.setIsVerifiedPurchase(true);
-        review.setStatus(ReviewStatus.PENDING);
+        review.setStatus(ReviewStatus.APPROVED);
         review.setCreatedAt(Instant.now());
         review.setUpdatedAt(Instant.now());
 
         ProductReview saved = reviewRepository.save(review);
-        log.info("User {} created review {} for product {} (status: PENDING)", userId, saved.getId(), productId);
+        log.info("User {} created review {} for product {} (status: APPROVED - auto-approved for verified buyer)", userId, saved.getId(), productId);
+
+        // Lập tức tính toán và cập nhật ratingSummary cho sản phẩm
+        recomputeRatingSummary(productId);
 
         return mapToResponse(saved);
     }
@@ -222,28 +225,17 @@ public class ReviewService {
         ProductReview review = reviewRepository.findByIdAndUserIdAndStatusNot(reviewId, userId, ReviewStatus.DELETED)
                 .orElseThrow(() -> new ResourceNotFoundException("Đánh giá không tồn tại hoặc bạn không có quyền thao tác"));
 
-        ReviewStatus prevStatus = review.getStatus();
-
         review.setRating(req.getRating());
         review.setTitle(req.getTitle().trim());
         review.setContent(req.getContent().trim());
+        review.setStatus(ReviewStatus.APPROVED);
+        review.setRejectionReason(null);
         review.setUpdatedAt(Instant.now());
 
-        // Nếu sửa đánh giá APPROVED hoặc REJECTED -> Đưa về PENDING để duyệt lại
-        if (prevStatus == ReviewStatus.APPROVED || prevStatus == ReviewStatus.REJECTED) {
-            review.setStatus(ReviewStatus.PENDING);
-            review.setModeratedBy(null);
-            review.setModeratedAt(null);
-            review.setRejectionReason(null);
-        }
-
         ProductReview saved = reviewRepository.save(review);
-        log.info("User {} updated review {} (status changed from {} to {})", userId, reviewId, prevStatus, saved.getStatus());
+        log.info("User {} updated review {} (status: APPROVED)", userId, reviewId);
 
-        // Nếu review từng APPROVED, giờ chuyển sang PENDING thì phải recompute rating summary
-        if (prevStatus == ReviewStatus.APPROVED) {
-            recomputeRatingSummary(review.getProductId());
-        }
+        recomputeRatingSummary(review.getProductId());
 
         return mapToResponse(saved);
     }

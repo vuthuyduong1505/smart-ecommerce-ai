@@ -12,7 +12,6 @@ import {
   XCircle,
   FileText,
   Laptop,
-  Star,
 } from 'lucide-react';
 import { orderService } from '../../services/orderService';
 import type { OrderResponse } from '../../types/order';
@@ -231,12 +230,9 @@ export const OrderDetailPage: React.FC = () => {
               <thead>
                 <tr className="border-b border-slate-200/80 text-xs font-bold text-slate-500 uppercase tracking-wider">
                   <th className="py-3.5 px-4 text-left">Sản phẩm</th>
-                  <th className="py-3.5 px-4 text-center w-24">Số lượng</th>
+                  <th className="py-3.5 px-4 text-center w-28">Số lượng</th>
                   <th className="py-3.5 px-4 text-right w-36">Đơn giá</th>
-                  <th className="py-3.5 px-4 text-right w-40">Thành tiền</th>
-                  {order.orderStatus === 'DELIVERED' && (
-                    <th className="py-3.5 px-4 text-center w-36">Đánh giá</th>
-                  )}
+                  <th className="py-3.5 px-4 text-right w-44">Thành tiền</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -271,48 +267,33 @@ export const OrderDetailPage: React.FC = () => {
                     <td className="py-4 px-4 text-center font-bold text-slate-700 align-middle">
                       {item.quantity}
                     </td>
-                    <td className="py-4 px-4 text-right text-slate-600 font-medium align-middle">
+                    <td className="py-4 px-4 text-right text-slate-600 font-medium align-middle whitespace-nowrap">
                       {formatPrice(item.unitPrice)}
                     </td>
-                    <td className="py-4 px-4 text-right text-slate-900 font-extrabold align-middle">
+                    <td className="py-4 px-4 text-right text-slate-900 font-extrabold align-middle whitespace-nowrap">
                       {formatPrice(item.totalPrice)}
                     </td>
-                    {order.orderStatus === 'DELIVERED' && (
-                      <td className="py-4 px-4 text-center align-middle">
-                        <Link
-                          to={`/products/${item.productSlug || item.productId}#reviews`}
-                          className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition-all border border-rose-200 shadow-2xs whitespace-nowrap"
-                        >
-                          <Star className="w-3.5 h-3.5 fill-current" />
-                          <span>Đánh giá</span>
-                        </Link>
-                      </td>
-                    )}
                   </tr>
                 ))}
               </tbody>
               <tfoot className="border-t-2 border-slate-100">
                 <tr>
                   <td colSpan={3} className="pt-4 pb-1.5 px-4 text-right text-xs text-slate-500 font-medium">Tạm tính:</td>
-                  <td className="pt-4 pb-1.5 px-4 text-right font-bold text-slate-800 text-sm">{formatPrice(order.subtotal)}</td>
-                  {order.orderStatus === 'DELIVERED' && <td></td>}
+                  <td className="pt-4 pb-1.5 px-4 text-right font-bold text-slate-800 text-sm whitespace-nowrap">{formatPrice(order.subtotal)}</td>
                 </tr>
                 <tr>
                   <td colSpan={3} className="py-1.5 px-4 text-right text-xs text-slate-500 font-medium">Phí vận chuyển:</td>
-                  <td className="py-1.5 px-4 text-right font-bold text-emerald-600 text-sm">Miễn phí</td>
-                  {order.orderStatus === 'DELIVERED' && <td></td>}
+                  <td className="py-1.5 px-4 text-right font-bold text-emerald-600 text-sm whitespace-nowrap">Miễn phí</td>
                 </tr>
                 {order.discountAmount > 0 && (
                   <tr>
                     <td colSpan={3} className="py-1.5 px-4 text-right text-xs text-slate-500 font-medium">Giảm giá:</td>
-                    <td className="py-1.5 px-4 text-right font-bold text-rose-600 text-sm">-{formatPrice(order.discountAmount)}</td>
-                    {order.orderStatus === 'DELIVERED' && <td></td>}
+                    <td className="py-1.5 px-4 text-right font-bold text-rose-600 text-sm whitespace-nowrap">-{formatPrice(order.discountAmount)}</td>
                   </tr>
                 )}
                 <tr className="border-t border-slate-200">
                   <td colSpan={3} className="pt-3 pb-2 px-4 text-right font-bold text-slate-900 text-sm sm:text-base">Tổng thanh toán:</td>
-                  <td className="pt-3 pb-2 px-4 text-right font-black text-rose-600 text-lg sm:text-xl">{formatPrice(order.grandTotal)}</td>
-                  {order.orderStatus === 'DELIVERED' && <td></td>}
+                  <td className="pt-3 pb-2 px-4 text-right font-black text-rose-600 text-lg sm:text-xl whitespace-nowrap">{formatPrice(order.grandTotal)}</td>
                 </tr>
               </tfoot>
             </table>
